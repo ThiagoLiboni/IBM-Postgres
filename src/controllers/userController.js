@@ -1,4 +1,4 @@
-import User from "../models/Client.js"
+import User from "../models/User.js"
 import crypto from 'node:crypto';
 
 export const createUser = async (req, res) => {
@@ -11,7 +11,7 @@ export const createUser = async (req, res) => {
             email: data.email,
             phoneNumber: data.phoneNumber,
             brokerName: data.brokerName,
-            brokeCity: data.brokerCity,
+            brokerCity: data.brokerCity,
             brokerState: data.brokerState,
             brokerPhone: data.brokerPhone
         }

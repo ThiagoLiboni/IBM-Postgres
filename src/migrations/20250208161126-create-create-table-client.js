@@ -22,7 +22,7 @@ module.exports = {
         allowNull: false
       },
       phoneNumber: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING(13),
         allowNull: false
       },
       createdAt: {

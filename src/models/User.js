@@ -23,7 +23,7 @@ import Sequelize, { Model } from "sequelize";
         allowNull: false
       },
       phoneNumber: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING(13),
         allowNull: false
       },
       brokerName: {
@@ -39,7 +39,7 @@ import Sequelize, { Model } from "sequelize";
         allowNull: false
       },
       brokerPhone: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING(13),
         allowNull: false
       }
       },{
