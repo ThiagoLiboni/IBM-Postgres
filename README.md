@@ -2,7 +2,10 @@
 
 ## Pré-Requisitos
 - Install docker e docker-compose (https://docs.docker.com/desktop/setup/install/windows-install/)
-
+- Install dependences with :
+     ```bash
+     npm install
+     ```
 ## Criar Container
 - Execute o seguinte comando para construir e iniciar o contêiner:
      ```bash
