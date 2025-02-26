@@ -1,7 +1,6 @@
 import Client from "../models/Client.js"
-import crypto from 'node:crypto';
 
-export const createClient = async (req, res) => {
+export const createClient = async (req, res, next) => {
     try {
         const id = await createNextId()
         const data = req.body
@@ -20,12 +19,12 @@ export const createClient = async (req, res) => {
            return res.status(201).json(user)
         }
 
-    } catch (error) {
-        console.error('Erro ao registrar cliente', error)
-        return res.status(500).json({ error: 'Não foi possivel registrar o cliente' });
+    } catch (err) {
+        console.error('Error to create a new client', err)
+        next(err)
     }
 }
-export const updateClient = async (req, res) => {
+export const updateClient = async (req, res, next) => {
     try {
         const { id } = req.params;
         const data = req.body;
@@ -41,16 +40,16 @@ export const updateClient = async (req, res) => {
         });
 
         if (!updatedUser) {
-            return res.status(404).json({ error: 'cliente não encontrado' });
+            return res.status(404).json({ error: 'Client not found to update' });
         }
-        return res.status(204).send();
+        return res.status(204);
 
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Não foi possivel atualizar o cliente' });
+    } catch (err) {
+        console.error('Error to update', err);
+        next(err)
     }
 }
-export const deleteClient = async (req, res)=>{
+export const deleteClient = async (req, res, next)=>{
     try{
         const {id} = req.params;
         const userDeleted = await Client.destroy(
@@ -59,33 +58,33 @@ export const deleteClient = async (req, res)=>{
             }
         )
         if (userDeleted === 0) {
-            return res.status(404).json({error: 'cliente não encontrado.'});
+            return res.status(404).json({error: 'Client not found to delete.'});
         } else {
-            console.log('cliente deletado com sucesso');
-            return res.status(204).send();
+            console.log('deleted with successful');
+            return res.status(204);
         }
     
-    } catch (error) {
-        console.error('Erro ao deletar cliente', error);
-        return res.status(500).json({error: 'Não foi possivel deletar o cliente.'});
+    } catch (err) {
+        console.error('Error to delete', err);
+        next(err)
     }
 }
-export const getClient = async (req, res)=>{
+export const getClient = async (req, res, next)=>{
     try{
         const filter =  req.body
         const user = await Client.findOne(filter)
         if(!user){
-            return res.status(400).json({error: 'nenhum cliente encontrado'})
+            return res.status(404).json({error: 'Client not found'})
         }else{
             return res.status(200).json(user)
         }
     }
-    catch(error){
-        console.error('Não foi possivel encontrar o cliente', error)
-        return res.status(500).json({erro:'Não foi possivel buscar o cliente'})
+    catch(err){
+        console.error('Unable to find the customer', err)
+        next(err)
     }
 }
-export const getAllClients = async (req, res)=>{
+export const getAllClients = async (req, res, next)=>{
     try{
         const filter = req.body
         const data =  await Client.getAll(filter)
@@ -95,8 +94,8 @@ export const getAllClients = async (req, res)=>{
         }
     }
     catch(error){
-        return res.status(500).json({error:'Não foi possivel buscar os clientes'})
-    }
+        console.error('Unable to find all customers', err)
+        next(err)    }
 }
 export const createNextId = async ()=>{
     try{
@@ -119,6 +118,6 @@ export const createNextId = async ()=>{
             return newIdParsed;
         }
     }catch(err){
-        console.error('Error ao criar novo id',err)
+        console.error('Error to create a new id',err)
     }
 }

@@ -1,7 +1,7 @@
 import User from "../models/User.js"
 import crypto from 'node:crypto';
 
-export const createUser = async (req, res) => {
+export const createUser = async (req, res, next) => {
     try {
         const data = req.body
         const userToCreated = {
@@ -22,12 +22,12 @@ export const createUser = async (req, res) => {
             return res.status(201).json(user)
         }
 
-    } catch (error) {
-        console.error('Erro ao criar usuário', error)
-        return res.status(500).json({ error: 'Não foi possivel criar o usuário' });
+    } catch (err) {
+        console.error('Error to create a new user', err)
+        next(err)
     }
 }
-export const updateUser = async (req, res) => {
+export const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
         const data = req.body;
@@ -44,16 +44,16 @@ export const updateUser = async (req, res) => {
         });
 
         if (!updatedUser) {
-            return res.status(404).json({ error: 'usuário não encontrado' });
+            return res.status(404).json({ error: 'User not found' });
         }
 
         res.status(204).send();
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Não foi possivel atualizar o usuário' });
+    } catch (err) {
+        console.error('Unable to update the registration',err);
+        next(err)
     }
 }
-export const deleteUser = async (req, res)=>{
+export const deleteUser = async (req, res, next)=>{
     try{
         const {id} = req.params;
         const userDeleted = await User.destroy(
@@ -62,18 +62,18 @@ export const deleteUser = async (req, res)=>{
             }
         )
         if (userDeleted === 0) {
-            return res.status(404).json({error: 'usuário não encontrado.'});
+            return res.status(404).json({error: 'User not found.'});
         } else {
-            console.log('usuário deletado com sucesso');
+            console.log('User deleted with successful');
             return res.status(204).send();
         }
     
     } catch (error) {
-        console.error('Erro ao deletar usuário', error);
-        return res.status(500).json({error: 'Não foi possivel deletar o usuário.'});
+        console.error('Error to delete the user', error);
+        next()
     }
 }
-export const getUser = async (req, res)=>{
+export const getUser = async (req, res, next)=>{
     try{
         const {id} =  req.params
         const user = await User.findOne(
@@ -82,17 +82,17 @@ export const getUser = async (req, res)=>{
             }
         )
         if(!user){
-           return res.status(400).json({error: 'nenhum usuário encontrado'})
+           return res.status(400).json({error: 'Not found user'})
         }else{
            return res.status(200).json(user)
         }
     }
-    catch(error){
-        console.error('Não foi possivel encontrar o usuário', error)
-        return res.status(500).json({erro:'Não foi possivel buscar os usuário'})
+    catch(err){
+        console.error('Unable to find the user', err)
+        next(err)
     }
 }
-export const getAllUsers = async (req, res)=>{
+export const getAllUsers = async (req, res, next)=>{
     try{
         const filter = req.body
         const data =  await User.getAll(filter)
@@ -101,7 +101,8 @@ export const getAllUsers = async (req, res)=>{
            return res.status(200).json(data)
         }
     }
-    catch(error){
-       return res.status(500).json({error:'Não foi possivel buscar usuários'})
+    catch(err){
+        console.error('Unable to find all users', err)
+        next(err)
     }
 }

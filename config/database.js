@@ -3,9 +3,9 @@ dotenv.config()
 
 export default {
     dialect:'postgres',
-    host:`${process.env.HOST}`,
-    username:`${process.env.DB_USER}`,
-    password:`${process.env.DB_KEY}`,
-    database:`${process.env.DB_NAME}`
+    host:`${process.env.PHOST}`,
+    username:`${process.env.PDB_USER}`,
+    password:`${process.env.PDB_KEY}`,
+    database:`${process.env.PDB_NAME}`
 
 }

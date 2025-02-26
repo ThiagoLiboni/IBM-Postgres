@@ -7,8 +7,13 @@ import bodyParser from 'body-parser'
 const app = express();
 app.use(bodyParser.json());
 
-app.use('/api',routesClient)
-app.use('/api',routesUser)
+app.use('/api/client',routesClient)
+app.use('/api/user',routesUser)
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+});
+
 
 startServer(app);
 
