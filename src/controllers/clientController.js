@@ -1,4 +1,5 @@
 import Client from "../models/Client.js"
+import { clientRequeriments } from "../utils/contracts.js"
 
 export const createClient = async (req, res, next) => {
     try {
@@ -6,11 +7,7 @@ export const createClient = async (req, res, next) => {
         const data = req.body
         const userToCreated = {
             id: id,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            phoneNumber: data.phoneNumber,
-            sellerId: data.sellerId
+            ...clientRequeriments(data)
         }
         console.log(userToCreated)
 
@@ -29,10 +26,7 @@ export const updateClient = async (req, res, next) => {
         const { id } = req.params;
         const data = req.body;
         const updates = {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            phoneNumber: data.phoneNumber
+            ...clientRequeriments(data)
         }
         const updatedUser = await Client.update(updates,
         {
@@ -71,8 +65,11 @@ export const deleteClient = async (req, res, next)=>{
 }
 export const getClient = async (req, res, next)=>{
     try{
-        const filter =  req.body
-        const user = await Client.findOne(filter)
+        const filter =  req.body || req.params
+        const user = await Client.findOne({
+            
+            where: filter
+        })
         if(!user){
             return res.status(404).json({error: 'Client not found'})
         }else{
@@ -86,8 +83,11 @@ export const getClient = async (req, res, next)=>{
 }
 export const getAllClients = async (req, res, next)=>{
     try{
-        const filter = req.body
-        const data =  await Client.getAll(filter)
+        const filter = req.body || req.params
+        const data =  await Client.getAll({
+           
+            where: filter
+        })
 
         if(data){
         return res.status(200).json(data)
@@ -105,13 +105,14 @@ export const createNextId = async ()=>{
             ]
         })
         const yearNow = new Date().getFullYear().toString().slice(-2)
+        const version_app = "1"
         let newId;
 
         if(lastId && lastId.id){
             const suffixId = parseInt(lastId.id.toString().slice(2)) + 1;
             newId = yearNow + suffixId.toString()
         }else{
-            newId = `${yearNow}01`
+            newId = `${version_app+yearNow}01`
         }
         if(newId!=undefined){
             const newIdParsed = parseInt(newId)

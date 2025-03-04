@@ -1,25 +1,20 @@
 import User from "../models/User.js"
-import crypto from 'node:crypto';
+import * as crypto from 'crypto';
+import { userRequirements } from "../utils/contracts.js";
 
 export const createUser = async (req, res, next) => {
     try {
         const data = req.body
         const userToCreated = {
             id: crypto.randomUUID(),
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            phoneNumber: data.phoneNumber,
-            brokerName: data.brokerName,
-            brokerCity: data.brokerCity,
-            brokerState: data.brokerState,
-            brokerPhone: data.brokerPhone
+            ...userRequirements(data)
         }
         console.log(userToCreated)
 
         const user = await User.create(userToCreated)
-        if(user){
-            return res.status(201).json(user)
+        if (user) {
+            const { password, ...userResponse } = user.toJSON ? user.toJSON : user
+            return res.status(201).json(userResponse)
         }
 
     } catch (err) {
@@ -31,16 +26,12 @@ export const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
         const data = req.body;
+        const updates = {
+           ...userRequirements(data)
+        }
 
-        const updatedUser = await User.update(id, {
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            contato: data.cel,
-            brokerNamee: data.bName,
-            brokeCity: data.brokerCity,
-            brokerState: data.brokerState,
-            brokerPhone: data.brokerPhone
+        const updatedUser = await User.update(updates, {
+            where: {id: id}
         });
 
         if (!updatedUser) {
@@ -49,59 +40,63 @@ export const updateUser = async (req, res, next) => {
 
         res.status(204).send();
     } catch (err) {
-        console.error('Unable to update the registration',err);
+        console.error('Unable to update the registration', err);
         next(err)
     }
 }
-export const deleteUser = async (req, res, next)=>{
-    try{
-        const {id} = req.params;
+export const deleteUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
         const userDeleted = await User.destroy(
             {
-                where: {id: id}
+                where: { id: id }
             }
         )
         if (userDeleted === 0) {
-            return res.status(404).json({error: 'User not found.'});
+            return res.status(404).json({ error: 'User not found.' });
         } else {
             console.log('User deleted with successful');
             return res.status(204).send();
         }
-    
+
     } catch (error) {
         console.error('Error to delete the user', error);
         next()
     }
 }
-export const getUser = async (req, res, next)=>{
-    try{
-        const {id} =  req.params
+export const getUser = async (req, res, next) => {
+    try {
+        const filter = req.body.filter || req.params
         const user = await User.findOne(
             {
-                where: {id:id}
+                where: filter
             }
         )
-        if(!user){
-           return res.status(400).json({error: 'Not found user'})
-        }else{
-           return res.status(200).json(user)
+        if (!user) {
+            return res.status(400).json({ error: 'Not found user' })
+        } else {
+            return res.status(200).json(user)
         }
     }
-    catch(err){
+    catch (err) {
         console.error('Unable to find the user', err)
         next(err)
     }
 }
-export const getAllUsers = async (req, res, next)=>{
-    try{
+export const getAllUsers = async (req, res, next) => {
+    try {
         const filter = req.body
-        const data =  await User.getAll(filter)
+        const data = await User.getAll(
+            {
+                where: filter
 
-        if(data){
-           return res.status(200).json(data)
+            })
+
+        if (data) {
+            return res.status(200).json(data)
         }
     }
-    catch(err){
+    catch (err) {
         console.error('Unable to find all users', err)
         next(err)
     }

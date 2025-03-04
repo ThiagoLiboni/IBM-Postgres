@@ -22,6 +22,10 @@ import Sequelize, { Model } from "sequelize";
         type: Sequelize.STRING(50),
         allowNull: false
       },
+      password: {
+        type: Sequelize.STRING(50),
+        allowNull: false
+      },
       phoneNumber: {
         type: Sequelize.STRING(13),
         allowNull: false
