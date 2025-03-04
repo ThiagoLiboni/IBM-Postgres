@@ -41,19 +41,19 @@ module.exports = {
       },
       brokerName: {
         type: Sequelize.STRING(100),
-        allowNull: false
+        allowNull: true
       },
       brokerCity: {
         type: Sequelize.STRING(25),
-        allowNull: false
+        allowNull: true
       },
       brokerState: {
         type: Sequelize.STRING(2),
-        allowNull: false
+        allowNull: true
       },
       brokerPhone: {
         type: Sequelize.STRING(13),
-        allowNull: false
+        allowNull: true
       }
     });
   },

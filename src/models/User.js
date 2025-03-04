@@ -1,8 +1,8 @@
 import Sequelize, { Model } from "sequelize";
 
-  class User extends Model {
-    static init(sequelize){
-      super.init({
+class User extends Model {
+  static init(sequelize) {
+    super.init({
       id: {
         allowNull: false,
         primaryKey: true,
@@ -26,31 +26,35 @@ import Sequelize, { Model } from "sequelize";
         type: Sequelize.STRING(13),
         allowNull: false
       },
+      password: {
+        type: Sequelize.STRING(50),
+        allowNull: false
+      },
       brokerName: {
         type: Sequelize.STRING(100),
-        allowNull: false
+        allowNull: true
       },
       brokerCity: {
         type: Sequelize.STRING(25),
-        allowNull: false
+        allowNull: true
       },
       brokerState: {
         type: Sequelize.STRING(2),
-        allowNull: false
+        allowNull: true
       },
       brokerPhone: {
         type: Sequelize.STRING(13),
-        allowNull: false
+        allowNull: true
       }
-      },{
-        sequelize,
-        modelName: 'User',
-        tableName: 'Users',
-        timestamps: true,
-      })
-    }
-    static associate(models) {
-      this.hasMany(models.Client, { foreignKey: 'sellerId', as: 'clients' });
-   }
+    }, {
+      sequelize,
+      modelName: 'User',
+      tableName: 'Users',
+      timestamps: true,
+    })
   }
+  static associate(models) {
+    this.hasMany(models.Client, { foreignKey: 'sellerId', as: 'clients' });
+  }
+}
 export default User;
