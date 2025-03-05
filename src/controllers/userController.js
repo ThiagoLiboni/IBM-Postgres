@@ -29,15 +29,12 @@ export const updateUser = async (req, res, next) => {
         const updates = {
            ...userRequirements(data)
         }
-
         const updatedUser = await User.update(updates, {
             where: {id: id}
         });
-
         if (!updatedUser) {
             return res.status(404).json({ error: 'User not found' });
         }
-
         res.status(204).send();
     } catch (err) {
         console.error('Unable to update the registration', err);
@@ -89,7 +86,6 @@ export const getAllUsers = async (req, res, next) => {
         const data = await User.getAll(
             {
                 where: filter
-
             })
 
         if (data) {
