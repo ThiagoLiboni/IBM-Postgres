@@ -4,20 +4,32 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "dev": " nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "- Install docker e docker-compose (https://docs.docker.com/desktop/setup/install/windows-install/)\r - Install dependences with :\r      ```bash\r      npm install\r      ```\r ## Criar Container\r - Execute o seguinte comando para construir e iniciar o contêiner:\r      ```bash\r      docker-compose up --build\r      ```\r ## Acessando Serviço\r - (localhost:3000)",
   "dependencies": {
+    "@types/jsonwebtoken": "^9.0.9",
+    "authentication-api-ibm": "^1.0.0",
+    "axios": "^1.8.1",
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
+    "redis": "^4.7.0",
     "sequelize": "^6.37.5",
     "sequelize-cli": "^6.6.2",
     "sqlite3": "^5.1.7",
     "typescript": "^5.8.2"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^22.13.9",
+    "nodemon": "^3.1.9"
   }
 }
