@@ -27,7 +27,7 @@ class User extends Model {
         allowNull: false
       },
       password: {
-        type: Sequelize.STRING(50),
+        type: Sequelize.STRING(75),
         allowNull: false
       },
       brokerName: {
