@@ -1,6 +1,7 @@
 import User from "../models/User.js"
 import * as crypto from 'crypto';
 import { userRequirements } from "../utils/contracts.js";
+import { Authenticate } from "authentication-api-ibm";
 
 export const createUser = async (req, res, next) => {
     try {
@@ -9,11 +10,14 @@ export const createUser = async (req, res, next) => {
             id: crypto.randomUUID(),
             ...userRequirements(data)
         }
-        console.log(userToCreated)
-
+        const encrypt = new Authenticate()
+        const hash = await encrypt.encryptKey(userToCreated.password)
+        if (hash) {
+            userToCreated.password = hash
+        }
         const user = await User.create(userToCreated)
         if (user) {
-            const { password, ...userResponse } = user.toJSON ? user.toJSON : user
+            const { password, ...userResponse } = user.toJSON()
             return res.status(201).json(userResponse)
         }
 
@@ -24,18 +28,18 @@ export const createUser = async (req, res, next) => {
 }
 export const updateUser = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { id } = req.params.id;
         const data = req.body;
         const updates = {
-           ...userRequirements(data)
+            ...userRequirements(data)
         }
         const updatedUser = await User.update(updates, {
-            where: {id: id}
+            where: { id: id }
         });
         if (!updatedUser) {
             return res.status(404).json({ error: 'User not found' });
         }
-        res.status(204).send();
+        return res.status(204).json(updateUser);
     } catch (err) {
         console.error('Unable to update the registration', err);
         next(err)
@@ -43,7 +47,7 @@ export const updateUser = async (req, res, next) => {
 }
 export const deleteUser = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { id } = req.params.id;
         const userDeleted = await User.destroy(
             {
                 where: { id: id }
@@ -63,7 +67,7 @@ export const deleteUser = async (req, res, next) => {
 }
 export const getUser = async (req, res, next) => {
     try {
-        const filter = req.body.filter || req.params
+        const filter = req.query || req.params.id
         const user = await User.findOne(
             {
                 where: filter
@@ -82,7 +86,7 @@ export const getUser = async (req, res, next) => {
 }
 export const getAllUsers = async (req, res, next) => {
     try {
-        const filter = req.body
+        const filter = req.query
         const data = await User.getAll(
             {
                 where: filter
