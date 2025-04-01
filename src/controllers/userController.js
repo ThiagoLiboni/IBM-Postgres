@@ -1,7 +1,7 @@
 import User from "../models/User.js"
 import * as crypto from 'crypto';
 import { userRequirements } from "../utils/contracts.js";
-import { Authenticate } from "authentication-api-ibm";
+import { Authenticate } from "auth-ibm-insurances";
 
 export const createUser = async (req, res, next) => {
     try {
@@ -11,9 +11,9 @@ export const createUser = async (req, res, next) => {
             ...userRequirements(data)
         }
         const encrypt = new Authenticate()
-        const hash = await encrypt.encryptKey(userToCreated.password)
-        if (hash) {
-            userToCreated.password = hash
+        const enconded = await encrypt.encryptKey(userToCreated.password)
+        if (enconded) {
+            userToCreated.password = enconded
         }
         const user = await User.create(userToCreated)
         if (user) {
@@ -74,7 +74,7 @@ export const getUser = async (req, res, next) => {
             }
         )
         if (!user) {
-            return res.status(400).json({ error: 'Not found user' })
+            return res.status(404).json({ error: 'User not found' })
         } else {
             return res.status(200).json(user)
         }

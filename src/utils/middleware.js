@@ -1,7 +1,7 @@
- import {Authenticate} from 'authentication-api-ibm'
+ import {Authenticate} from 'auth-ibm-insurances'
 
 const secretKey = process.env.SECRET_KEY
-const Authentication = new Authenticate(null, null)
+const Authentication = new Authenticate()
 
 
 export const authorize = (req, res, next) => {
